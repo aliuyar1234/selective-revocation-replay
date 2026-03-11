@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this repository or build on the accompanying artifact, please cite the repository and the companion manuscript."
+title: "Selective Revocation and Replay"
+type: software
+version: "0.1.0"
+date-released: 2026-03-11
+authors:
+  - family-names: "Uyar"
+    given-names: "Ali"
+abstract: "Code, paper source, and frozen evaluation outputs for selective revocation and replay after persistent indirect prompt injection in memory-augmented LLM agents."
+repository-code: "https://github.com/aliuyar1234/selective-revocation-replay"
+url: "https://github.com/aliuyar1234/selective-revocation-replay"
+keywords:
+  - "llm-agents"
+  - "prompt-injection"
+  - "llm-security"
+  - "agent-memory"
+  - "provenance"
+  - "research-artifact"
+  - "reproducibility"
+license: "NOASSERTION"
+preferred-citation:
+  type: article
+  title: "Selective Revocation and Replay: Post-Compromise Recovery of Explicit Persisted State in Memory-Augmented LLM Agents"
+  authors:
+    - family-names: "Uyar"
+      given-names: "Ali"
+  year: 2026
+  url: "https://github.com/aliuyar1234/selective-revocation-replay/raw/main/paper/selective-revocation-and-replay.pdf"
+  note: "Companion manuscript and artifact repository."

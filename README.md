@@ -1,6 +1,7 @@
 # Selective Revocation and Replay
 
 [![Paper PDF](https://img.shields.io/badge/Paper_PDF-Download-0A66C2?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/raw/main/paper/selective-revocation-and-replay.pdf)
+[![Citation](https://img.shields.io/badge/Citation-CFF-E05D44?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/blob/main/CITATION.cff)
 [![LaTeX Source](https://img.shields.io/badge/LaTeX-Source-008080?style=for-the-badge&logo=latex&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/paper/usenix_security26)
 [![Frozen Results](https://img.shields.io/badge/Results-Frozen_Artifact-2E8B57?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/results)
 [![Artifact Runbook](https://img.shields.io/badge/Artifact-Runbook-5B4B8A?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/blob/main/artifact/runbook.md)
@@ -91,6 +92,7 @@ Readers who only want the paper and frozen evidence can start with:
 - `artifact/runbook.md`
 
 The `Paper PDF` badge above points to GitHub's direct raw-file endpoint for the compiled PDF so readers can open or download the paper immediately.
+GitHub will also expose a `Cite this repository` panel from [`CITATION.cff`](CITATION.cff).
 
 ## Quick start
 
