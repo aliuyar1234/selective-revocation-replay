@@ -1,6 +1,16 @@
 # Selective Revocation and Replay
 
+[![Paper PDF](https://img.shields.io/badge/Paper_PDF-Download-0A66C2?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/raw/main/paper/selective-revocation-and-replay.pdf)
+[![LaTeX Source](https://img.shields.io/badge/LaTeX-Source-008080?style=for-the-badge&logo=latex&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/paper/usenix_security26)
+[![Frozen Results](https://img.shields.io/badge/Results-Frozen_Artifact-2E8B57?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/results)
+[![Artifact Runbook](https://img.shields.io/badge/Artifact-Runbook-5B4B8A?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/blob/main/artifact/runbook.md)
+[![Pytest](https://img.shields.io/badge/Pytest-25_passed-2ea44f?style=for-the-badge&logo=pytest&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/tests)
+
 This repository contains the code, paper source, and frozen evaluation outputs for **Selective Revocation and Replay for Persistent Indirect Prompt Injection in Memory-Augmented LLM Agents**.
+
+> **Abstract.** This project studies post-compromise recovery for memory-augmented LLM agents after persistent indirect prompt injection has already been written into durable state. The core mechanism revokes persisted descendants of suspicious roots and replays only dirty state-writing events when replay is sound, with fallback to coarse rollback otherwise. In a frozen deterministic matrix spanning 8 task chains, 2 memory architectures, 2 attack variants, 5 methods, and 1 ablation, selective replay is the only method that simultaneously reaches zero residual attack success on explicit attacks while preserving non-zero benign retention. A focused live confirmation on `qwen2.5:14b` shows the same recovery wedge on repeated retrieval-memory runs.
+
+## Research focus
 
 The project studies post-compromise recovery in a narrow but fully reproducible setting:
 
@@ -12,6 +22,13 @@ The project studies post-compromise recovery in a narrow but fully reproducible 
 - selective descendant revocation
 - writer-only replay with coarse rollback fallback
 - a frozen evaluation matrix over 8 chains, 2 architectures, 2 attack variants, 5 methods, and 1 ablation
+
+## Main findings
+
+- In the deterministic artifact, selective replay is the only method that combines zero residual explicit attack success with non-zero retained benign state.
+- In retrieval memory, selective replay preserves the rollback-like safety/retention outcome at materially lower post-detection cost.
+- In the focused live confirmation, unrecovered runs keep the attack active while selective replay restores clean follow-up behavior and retained remembered facts.
+- The strongest end-to-end live case succeeds with only four revocations and two replayed writer events.
 
 ## What is included
 
@@ -63,7 +80,7 @@ For local Qwen checkpoints, set a local model path in the corresponding config o
 
 Directories that hold bulky local run outputs, transient paper build files, local preview renders, handoff packages, or archived working material are intentionally ignored by Git.
 
-## Public reading path
+## Read the paper
 
 Readers who only want the paper and frozen evidence can start with:
 
@@ -72,6 +89,8 @@ Readers who only want the paper and frozen evidence can start with:
 - `results/tables/`
 - `results/figures/`
 - `artifact/runbook.md`
+
+The `Paper PDF` badge above points to GitHub's direct raw-file endpoint for the compiled PDF so readers can open or download the paper immediately.
 
 ## Quick start
 
