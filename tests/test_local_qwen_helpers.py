@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 import pytest
 
 from src.llm_backend import (
@@ -11,7 +13,7 @@ from src.llm_backend import (
     _normalize_summary_payload,
 )
 from src.pipeline import load_project_settings
-from src.qwen_runtime import _bundle_cache_key
+from src.qwen_runtime import _bundle_cache_key, bootstrap_local_qwen_stack, repo_root
 from src.schemas import ObjectRecord
 
 
@@ -124,3 +126,25 @@ def test_bundle_cache_key_includes_chat_template_kwargs() -> None:
     first = _bundle_cache_key("/models/Qwen3.5-27B", "qwen3_5_text", {"enable_thinking": False})
     second = _bundle_cache_key("/models/Qwen3.5-27B", "qwen3_5_text", {"enable_thinking": True})
     assert first != second
+
+
+def test_bootstrap_local_qwen_stack_prefers_installed_packages(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "path", ["site-packages"])
+    monkeypatch.setattr("src.qwen_runtime.find_spec", lambda name: object())
+
+    bootstrap_local_qwen_stack()
+
+    assert sys.path == ["site-packages"]
+
+
+def test_bootstrap_local_qwen_stack_falls_back_to_vendored_paths(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "path", ["site-packages"])
+    monkeypatch.setattr("src.qwen_runtime.find_spec", lambda name: None)
+
+    bootstrap_local_qwen_stack()
+
+    vendor_root = repo_root() / "vendor"
+    assert sys.path[:2] == [
+        str(vendor_root / "hfdeps"),
+        str(vendor_root / "transformers-main" / "src"),
+    ]

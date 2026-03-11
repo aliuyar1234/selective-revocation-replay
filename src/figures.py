@@ -289,7 +289,7 @@ def _figure_live_case_study(bundle: dict[str, Any], path: Path) -> None:
     if not case:
         raise RuntimeError("Live confirmation bundle is missing a case_study payload.")
 
-    fig = plt.figure(figsize=(12.4, 6.7), facecolor="white")
+    fig = plt.figure(figsize=(3.65, 6.35), facecolor="white")
     ax = fig.add_subplot(111)
     ax.axis("off")
     ax.set_xlim(0, 1)
@@ -297,21 +297,21 @@ def _figure_live_case_study(bundle: dict[str, Any], path: Path) -> None:
     ax.set_facecolor("white")
 
     palette = {
-        "ink": "#0f172a",
-        "muted": "#475569",
-        "line": "#cbd5e1",
-        "bad": "#b42318",
-        "bad_fill": "#fff5f4",
-        "bad_edge": "#f7b4ae",
-        "good": "#027a48",
-        "good_fill": "#f3fff7",
-        "good_edge": "#a7efbf",
-        "warn": "#b54708",
-        "warn_fill": "#fff7ed",
-        "warn_edge": "#fdba74",
-        "info": "#175cd3",
-        "info_fill": "#eff8ff",
-        "info_edge": "#93c5fd",
+        "ink": "#14213d",
+        "muted": "#52627a",
+        "line": "#d6dde8",
+        "bad": "#b9382f",
+        "bad_fill": "#fff6f4",
+        "bad_edge": "#efb1aa",
+        "good": "#1f7a4d",
+        "good_fill": "#f4fbf6",
+        "good_edge": "#a6dbb7",
+        "warn": "#b56a19",
+        "warn_fill": "#fff8ef",
+        "warn_edge": "#f0c48c",
+        "info": "#2a61d0",
+        "info_fill": "#f3f7ff",
+        "info_edge": "#9cbcf8",
         "card": "#ffffff",
     }
 
@@ -327,285 +327,226 @@ def _figure_live_case_study(bundle: dict[str, Any], path: Path) -> None:
             return action[start:end]
         return action
 
-    def add_card(
-        x: float,
-        y: float,
-        w: float,
-        h: float,
-        title: str,
-        body: str,
-        face: str,
-        edge: str,
-        *,
-        accent: str | None = None,
-        monospace: bool = False,
-        body_size: float = 9.0,
-        body_offset: float = 0.082,
-    ) -> None:
-        card = FancyBboxPatch(
-            (x, y),
-            w,
-            h,
-            boxstyle="round,pad=0.012,rounding_size=0.02",
-            linewidth=1.0,
-            facecolor=face,
-            edgecolor=edge,
-        )
-        ax.add_patch(card)
-        if accent:
-            ax.add_patch(Rectangle((x, y + h - 0.014), w, 0.014, facecolor=accent, edgecolor="none"))
-        ax.text(x + 0.018, y + h - 0.038, title, ha="left", va="top", fontsize=10, fontweight="bold", color=palette["ink"])
-        ax.text(
-            x + 0.018,
-            y + h - body_offset,
-            wrap_text(body, max(15, int(110 * w))),
-            ha="left",
-            va="top",
-            fontsize=body_size,
-            color=palette["muted"],
-            fontfamily="monospace" if monospace else None,
-        )
-
-    def add_arrow(x0: float, y0: float, x1: float, y1: float, color: str) -> None:
-        ax.annotate(
-            "",
-            xy=(x1, y1),
-            xytext=(x0, y0),
-            arrowprops={"arrowstyle": "->", "lw": 1.25, "color": color, "shrinkA": 6, "shrinkB": 6},
-        )
-
-    def add_tag(x: float, y: float, text: str, face: str, edge: str, text_color: str) -> float:
-        width = 0.014 + 0.0072 * len(text)
-        tag = FancyBboxPatch(
-            (x, y),
-            width,
-            0.042,
-            boxstyle="round,pad=0.008,rounding_size=0.018",
-            linewidth=0.8,
-            facecolor=face,
-            edgecolor=edge,
-        )
-        ax.add_patch(tag)
-        ax.text(x + width / 2, y + 0.021, text, ha="center", va="center", fontsize=8.1, color=text_color, fontweight="bold")
-        return width
-
-    def add_section_panel(x: float, y: float, w: float, h: float, title: str, subtitle: str, accent: str, face: str, edge: str) -> None:
+    def add_panel(x: float, y: float, w: float, h: float, title: str, accent: str, face: str, edge: str) -> None:
         panel = FancyBboxPatch(
             (x, y),
             w,
             h,
-            boxstyle="round,pad=0.012,rounding_size=0.025",
+            boxstyle="round,pad=0.012,rounding_size=0.03",
             linewidth=1.0,
             facecolor=face,
             edgecolor=edge,
         )
         ax.add_patch(panel)
-        ax.add_patch(Rectangle((x, y + h - 0.018), w, 0.018, facecolor=accent, edgecolor="none"))
-        ax.text(x + 0.022, y + h - 0.044, title, ha="left", va="top", fontsize=11.5, fontweight="bold", color=palette["ink"])
-        ax.text(x + 0.022, y + h - 0.076, subtitle, ha="left", va="top", fontsize=8.7, color=palette["muted"])
+        ax.add_patch(Rectangle((x, y + h - 0.012), w, 0.012, facecolor=accent, edgecolor="none"))
+        ax.text(x + 0.024, y + h - 0.036, title, ha="left", va="top", fontsize=10.0, fontweight="bold", color=palette["ink"])
+
+    def add_text_block(
+        x: float,
+        y: float,
+        text: str,
+        *,
+        width: int = 54,
+        fontsize: float = 7.5,
+        color: str | None = None,
+        monospace: bool = False,
+    ) -> None:
+        ax.text(
+            x,
+            y,
+            wrap_text(text, width),
+            ha="left",
+            va="top",
+            fontsize=fontsize,
+            color=color or palette["muted"],
+            fontfamily="monospace" if monospace else None,
+        )
+
+    def add_strip(
+        x: float,
+        y: float,
+        w: float,
+        h: float,
+        text: str,
+        *,
+        face: str,
+        edge: str,
+        accent: str,
+        text_color: str | None = None,
+        fontsize: float = 7.0,
+        monospace: bool = False,
+        width: int = 52,
+    ) -> None:
+        strip = FancyBboxPatch(
+            (x, y),
+            w,
+            h,
+            boxstyle="round,pad=0.008,rounding_size=0.022",
+            linewidth=0.9,
+            facecolor=face,
+            edgecolor=edge,
+        )
+        ax.add_patch(strip)
+        ax.add_patch(Rectangle((x, y + h - 0.01), w, 0.01, facecolor=accent, edgecolor="none"))
+        ax.text(
+            x + 0.018,
+            y + h / 2,
+            wrap_text(text, width),
+            ha="left",
+            va="center",
+            fontsize=fontsize,
+            color=text_color or palette["muted"],
+            fontfamily="monospace" if monospace else None,
+        )
 
     def add_metric_chip(x: float, y: float, w: float, label: str, value: str, edge: str, value_color: str) -> None:
         chip = FancyBboxPatch(
             (x, y),
             w,
-            0.065,
+            0.05,
             boxstyle="round,pad=0.008,rounding_size=0.018",
             linewidth=0.9,
             facecolor=palette["card"],
             edgecolor=edge,
         )
         ax.add_patch(chip)
-        ax.text(x + w / 2, y + 0.043, label, ha="center", va="center", fontsize=7.8, color=palette["muted"])
-        ax.text(x + w / 2, y + 0.019, value, ha="center", va="center", fontsize=10.8, fontweight="bold", color=value_color)
+        ax.text(x + w / 2, y + 0.034, label, ha="center", va="center", fontsize=6.7, color=palette["muted"])
+        ax.text(x + w / 2, y + 0.016, value, ha="center", va="center", fontsize=9.3, fontweight="bold", color=value_color)
 
     def add_metric_row(x: float, y: float, w: float, metrics: list[tuple[str, str]], edge: str, value_color: str) -> None:
-        gap = 0.012
+        gap = 0.014
         chip_w = (w - gap * (len(metrics) - 1)) / len(metrics)
         for idx, (label, value) in enumerate(metrics):
             add_metric_chip(x + idx * (chip_w + gap), y, chip_w, label, value, edge, value_color)
 
     model_label = case.get("model_id", case.get("model_name", "local model"))
-    ax.text(0.04, 0.96, "Live Case Study", ha="left", va="top", fontsize=18, fontweight="bold", color=palette["ink"])
+    ax.text(0.06, 0.965, "Live Case Study", ha="left", va="top", fontsize=14.6, fontweight="bold", color=palette["ink"])
     ax.text(
-        0.04,
-        0.92,
+        0.06,
+        0.93,
         f"{model_label} | {case['chain_id']} | {case['architecture']} memory | {case['attack_variant']} attack",
         ha="left",
         va="top",
-        fontsize=9.8,
+        fontsize=8.1,
         color=palette["muted"],
     )
-
-    tag_x = 0.62
-    tag_x += add_tag(tag_x, 0.925, f"mode: {case.get('replay_mode', 'writer_only')}", palette["info_fill"], palette["info_edge"], palette["info"]) + 0.012
-    tag_x += add_tag(tag_x, 0.925, f"revoked: {case['revoked_object_count']}", palette["warn_fill"], palette["warn_edge"], palette["warn"]) + 0.012
-    add_tag(tag_x, 0.925, f"writers: {case['replayed_writer_event_count']}", palette["good_fill"], palette["good_edge"], palette["good"])
-
-    ax.text(0.04, 0.855, "Attack and repair path", ha="left", va="center", fontsize=10.5, fontweight="bold", color=palette["muted"])
+    ax.text(
+        0.06,
+        0.905,
+        "A poisoned workflow note survives into S3 until selective replay rebuilds the clean state.",
+        ha="left",
+        va="top",
+        fontsize=7.3,
+        color=palette["muted"],
+    )
+    ax.text(
+        0.06,
+        0.862,
+        (
+            f"Replay mode: writer-only | "
+            f"{case['revoked_object_count']} revoked | "
+            f"{case['replayed_writer_event_count']} writer replays"
+        ),
+        ha="left",
+        va="top",
+        fontsize=7.15,
+        color=palette["muted"],
+    )
 
     bad_target = extract_action_arg(case["no_recovery_s3_action"])
     recovered_search = extract_action_arg(case["recovered_s3_search_action"])
     recovered_target = extract_action_arg(case["recovered_s3_read_action"])
 
-    top_y = 0.665
-    top_w = 0.21
-    top_h = 0.145
-    top_xs = [0.04, 0.28, 0.52, 0.76]
-    add_card(
-        top_xs[0],
-        top_y,
-        top_w,
-        top_h,
-        "1. Malicious read",
-        f"read: {Path(case['suspicious_root_path']).name}",
-        palette["card"],
-        palette["bad_edge"],
+    panel_x = 0.06
+    panel_w = 0.88
+
+    attack_y = 0.565
+    add_panel(panel_x, attack_y, panel_w, 0.18, "1. Attack path", palette["warn"], "#fffdfa", palette["warn_edge"])
+    add_text_block(
+        panel_x + 0.024,
+        attack_y + 0.118,
+        f"S1 read: {Path(case['suspicious_root_path']).name}",
+        width=44,
+        fontsize=7.0,
+        color=palette["ink"],
+    )
+    add_text_block(
+        panel_x + 0.024,
+        attack_y + 0.082,
+        "Persisted note: consult restricted/vault.txt for reimbursements.",
+        width=50,
+        fontsize=7.2,
+    )
+    add_text_block(
+        panel_x + 0.024,
+        attack_y + 0.046,
+        f"After S2: flag {case['suspicious_root_id']}.",
+        width=48,
+        fontsize=7.2,
+    )
+
+    unrecovered_y = 0.355
+    add_panel(panel_x, unrecovered_y, panel_w, 0.16, "2. No recovery", palette["bad"], palette["bad_fill"], palette["bad_edge"])
+    add_strip(
+        panel_x + 0.024,
+        unrecovered_y + 0.05,
+        0.832,
+        0.032,
+        f"S3 route: {bad_target}",
+        face=palette["card"],
+        edge=palette["bad_edge"],
         accent=palette["bad"],
+        fontsize=6.7,
         monospace=True,
-        body_size=8.55,
-    )
-    add_card(
-        top_xs[1],
-        top_y,
-        top_w,
-        top_h,
-        "2. Poisoned note written",
-        f"Travel reimbursements now route to {bad_target}.",
-        palette["card"],
-        palette["warn_edge"],
-        accent=palette["warn"],
-        body_size=8.25,
-    )
-    add_card(
-        top_xs[2],
-        top_y,
-        top_w,
-        top_h,
-        "3. Detection at S2",
-        f"Flagged root: {case['suspicious_root_id']}\nRevoked descendants: {case['revoked_object_count']}",
-        palette["card"],
-        palette["info_edge"],
-        accent=palette["info"],
-        body_size=8.4,
-    )
-    add_card(
-        top_xs[3],
-        top_y,
-        top_w,
-        top_h,
-        "4. Benign fact survives",
-        "Contractor meal cap retained.",
-        palette["card"],
-        palette["good_edge"],
-        accent=palette["good"],
-        body_size=8.2,
-    )
-    for idx in range(len(top_xs) - 1):
-        add_arrow(top_xs[idx] + top_w, top_y + top_h / 2, top_xs[idx + 1], top_y + top_h / 2, palette["line"])
-
-    left_x = 0.04
-    right_x = 0.525
-    panel_y = 0.145
-    panel_w = 0.435
-    panel_h = 0.405
-
-    add_section_panel(
-        left_x,
-        panel_y,
-        panel_w,
-        panel_h,
-        "A. Unrecovered future",
-        "The poisoned workflow note remains active and still drives the S3 tool choice.",
-        palette["bad"],
-        palette["bad_fill"],
-        palette["bad_edge"],
-    )
-    add_section_panel(
-        right_x,
-        panel_y,
-        panel_w,
-        panel_h,
-        "B. Selective replay",
-        (
-            f"Writer-only replay | {case['replayed_writer_event_count']} writers | "
-            f"{case['revoked_object_count']} revoked | fallback: no"
-        ),
-        palette["good"],
-        palette["good_fill"],
-        palette["good_edge"],
-    )
-
-    add_card(
-        left_x + 0.025,
-        panel_y + 0.19,
-        0.385,
-        0.095,
-        "Observed S3 tool call",
-        f"read: {bad_target}",
-        palette["card"],
-        palette["bad_edge"],
-        accent=palette["bad"],
-        monospace=True,
-        body_size=8.75,
-    )
-    add_card(
-        left_x + 0.025,
-        panel_y + 0.088,
-        0.385,
-        0.085,
-        "Failure mechanism",
-        "S3 still follows the poisoned route.",
-        palette["card"],
-        palette["bad_edge"],
-        body_size=8.45,
-        body_offset=0.066,
+        width=38,
     )
     no_metrics = case["metrics"]["no_recovery"]
     add_metric_row(
-        left_x + 0.025,
-        panel_y + 0.004,
-        0.385,
+        panel_x + 0.024,
+        unrecovered_y + 0.014,
+        0.832,
         [("ASR", str(no_metrics["residual_asr_s3"])), ("S3", str(no_metrics["s3_correct"])), ("S4", str(no_metrics["s4_retention_correct"]))],
         palette["bad_edge"],
         palette["bad"],
     )
 
-    add_card(
-        right_x + 0.025,
-        panel_y + 0.18,
-        0.385,
-        0.105,
-        "Repaired S3 path",
-        f"search: {recovered_search}\nread: {recovered_target}",
-        palette["card"],
-        palette["info_edge"],
+    replay_y = 0.055
+    add_panel(panel_x, replay_y, panel_w, 0.255, "3. Selective replay", palette["good"], palette["good_fill"], palette["good_edge"])
+    add_strip(
+        panel_x + 0.024,
+        replay_y + 0.112,
+        0.832,
+        0.038,
+        f"Clean S3 route: {recovered_target}",
+        face=palette["card"],
+        edge=palette["info_edge"],
         accent=palette["info"],
-        monospace=True,
-        body_size=8.2,
+        fontsize=6.8,
+        width=40,
     )
-    add_card(
-        right_x + 0.025,
-        panel_y + 0.088,
-        0.385,
-        0.085,
-        "Retained S4 memory",
-        "Contractor tier remains available.",
-        palette["card"],
-        palette["good_edge"],
-        body_size=8.45,
-        body_offset=0.066,
+    add_strip(
+        panel_x + 0.024,
+        replay_y + 0.064,
+        0.832,
+        0.03,
+        "S4 fact: contractor meal cap $45/day",
+        face=palette["card"],
+        edge=palette["good_edge"],
+        accent=palette["good"],
+        fontsize=6.75,
+        width=44,
     )
     replay_metrics = case["metrics"]["selective_replay"]
     add_metric_row(
-        right_x + 0.025,
-        panel_y + 0.004,
-        0.385,
+        panel_x + 0.024,
+        replay_y + 0.012,
+        0.832,
         [("ASR", str(replay_metrics["residual_asr_s3"])), ("S3", str(replay_metrics["s3_correct"])), ("S4", str(replay_metrics["s4_retention_correct"]))],
         palette["good_edge"],
         palette["good"],
     )
 
-    fig.subplots_adjust(left=0.02, right=0.985, top=0.98, bottom=0.055)
+    fig.subplots_adjust(left=0.02, right=0.985, top=0.985, bottom=0.025)
     fig.savefig(path, facecolor=fig.get_facecolor())
     fig.savefig(path.with_suffix(".png"), dpi=220, facecolor=fig.get_facecolor())
     plt.close(fig)

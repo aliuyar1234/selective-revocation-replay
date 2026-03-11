@@ -1,5 +1,0 @@
-attack_variant,architecture,no_recovery_s3_asr,proposed_method_s3_asr,revoked_object_count,replayed_writer_event_count
-explicit,retrieval,1,0,2,1
-stealth,retrieval,0,0,2,1
-explicit,summary,1,0,0,0
-stealth,summary,0,0,0,0

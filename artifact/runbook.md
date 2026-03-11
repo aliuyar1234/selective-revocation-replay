@@ -80,17 +80,27 @@ This default batch intentionally targets the strongest live-model settings for t
 - `c01_travel`, retrieval, explicit
 - `c05_training`, retrieval, explicit
 
-## 6. Assemble paper and artifact assets
+## 6. Assemble paper assets
 
 ```powershell
 python scripts/build_paper_artifacts.py
 ```
 
-This copies generated tables and figures into `paper/` and writes an artifact manifest with repository-relative paths.
+This refreshes the standalone paper package under `paper/usenix_security26/`. It syncs the bibliography, the artifact table, and the figure assets used by the LaTeX source.
+
+## 7. Build the public paper PDF
+
+```powershell
+powershell -ExecutionPolicy Bypass -File paper/usenix_security26/build.ps1
+```
+
+Expected output:
+
+- `paper/selective-revocation-and-replay.pdf`
 
 ## Public repo note
 
-The public GitHub-facing repository keeps aggregate outputs, paper assets, and the focused live-confirmation summary. Large per-run directories are generated locally and ignored by default.
+The public GitHub-facing repository keeps aggregate outputs, paper assets, and the focused live-confirmation summary. Large per-run directories, LaTeX transient files, QA screenshots, handoff bundles, and other working material are generated locally and ignored by default.
 
 ## Sanity checks
 

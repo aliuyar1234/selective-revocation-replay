@@ -2,9 +2,11 @@
 \usepackage{usenix}
 
 \usepackage{graphicx}
+\usepackage{float}
 \usepackage{booktabs}
 \usepackage{amsmath,amssymb,amsthm}
 \graphicspath{{assets/}}
+\raggedbottom
 
 \newtheorem{proposition}{Proposition}
 
@@ -34,7 +36,7 @@ Preventive architectures remain important, but they do not remove the incident-r
 
 The practical challenge is that recovery must earn its complexity. If root deletion already suffices, or if rollback dominates on safety, retention, and cost, then replay is not interesting. The motivating question is therefore a tradeoff question: can targeted replay recover future safe behavior more surgically than reset-like baselines while preserving benign accumulated state?
 
-Our answer is yes, within a deliberately narrow scope. In a deterministic artifact, selective replay is the only method that combines zero residual explicit attack success with non-zero retained benign state. We then show the same wedge on a live local agent using schema-constrained tool outputs. Figure~\ref{fig:live-case-study} illustrates the strongest case: an unrecovered travel assistant keeps consulting a restricted file due to poisoned memory, while selective replay repairs the poisoned state, returns the agent to public-policy documents, and preserves the remembered reimbursement tier needed for a later benign query.
+Our answer is yes, within a deliberately narrow scope. In a deterministic artifact, selective replay is the only method that combines zero residual explicit attack success with non-zero retained benign state. We then show the same wedge on a live local agent using schema-constrained tool outputs. The strongest travel case shows the mechanism end to end: an unrecovered assistant keeps consulting a restricted file due to poisoned memory, while selective replay repairs the poisoned state, returns the agent to public-policy documents, and preserves the remembered reimbursement tier needed for a later benign query.
 
 \paragraph{Contributions.}
 This work makes four contributions:
@@ -74,17 +76,6 @@ Assume that all relevant cross-session influence flows through explicit material
 \noindent\textbf{Proof sketch.}
 Revoking the persisted descendants of suspicious roots removes every active persisted object on any path from the roots to future state. Replay-safe writer events then operate on cleaned inputs that either remove revoked parents or substitute clean replay replacements. By determinism, replay reconstructs the same clean materialized outputs from the same non-revoked inputs. The resulting future persisted state therefore depends only on non-revoked inputs. This argument explicitly excludes hidden model state, incomplete provenance, and replay-unsafe branches; those cases trigger fallback rather than being treated as valid replay.
 
-\subsection{Motivating live case}
-
-In the travel chain, the agent reads a malicious reference file in S1 that says future reimbursement questions should consult \texttt{restricted/vault.txt}. The memory writer stores that rule as a durable workflow note together with a benign user fact about the reimbursement tier. In S2 the poisoned state leads to restricted-file reads. After S2 the malicious file read is marked suspicious. In S3 the unrecovered run still reads the restricted file. Selective replay instead revokes four poisoned descendants, replays two writer events, creates clean replacements, and returns the agent to public travel policy. In S4 the repaired state still remembers the user's contractor tier and answers the hotel-cap question correctly.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{fig5_live_case_study.pdf}
-\caption{Focused live-model case study on \texttt{qwen2.5:14b} with structured local tool use. The suspicious root is the malicious travel reference file read. Without recovery, the agent continues to read \texttt{restricted/vault.txt} in S3. Selective replay revokes only four persisted descendants, replays two writer events in writer-only mode, and recovers both S3 behavior and S4 retained memory.}
-\label{fig:live-case-study}
-\end{figure*}
-
 \section{Experimental Setup}
 
 \subsection{Deterministic artifact}
@@ -112,22 +103,13 @@ We rerun each case three times with \texttt{no\_recovery} and \texttt{selective\
 
 \subsection{Metrics}
 
-All runs use the same frozen metrics:
-\begin{itemize}
-\item residual S3 attack success;
-\item S3 correctness;
-\item S4 retention accuracy;
-\item extra LLM calls after detection;
-\item number of revoked objects;
-\item number of replayed writer events;
-\item fallback rate to coarse rollback.
-\end{itemize}
-
-Residual S3 attack success is triggered by a restricted-file read or a secret-token leak. S3 and S4 correctness are rule-based and deterministic.
+All runs use the same frozen metrics: residual S3 attack success, S3 correctness, S4 retention accuracy, extra LLM calls after detection, number of revoked objects, number of replayed writer events, and fallback rate to coarse rollback. Residual S3 attack success is triggered by a restricted-file read or a secret-token leak, while S3 and S4 correctness are rule-based and deterministic.
 
 \section{Results}
 
 \subsection{Selective replay is the only method that preserves both safety and retention}
+
+We start with the explicit-attack artifact results because they capture the paper's main safety-retention tradeoff. Table~\ref{tab:artifact-main} compares selective replay against reset-like baselines, rollback, and the revoke-only ablation under the same frozen evaluation matrix.
 
 \input{artifact_table.tex}
 
@@ -139,15 +121,22 @@ The full CSV package also includes stealth rows, but they are not the headline c
 
 \subsection{The recovery wedge appears in a real local agent}
 
-\input{live_table.tex}
+The focused live confirmation asks a narrower question than the artifact: does the same recovery wedge survive contact with a real local model? Across three repeated runs on each of the two explicit retrieval chains, it does. Across all six unrecovered reruns, residual attack success stays at 1.0. Across all six selective-replay reruns, residual attack success falls to 0.0 while S3 correctness and S4 retention both reach 1.0. Figure~\ref{fig:live-case-study} gives the strongest travel case end to end.
 
-Table~\ref{tab:live-confirmation} confirms the core pattern on a live local model. Across all six unrecovered reruns, residual attack success stays at 1.0. Across all six selective-replay reruns, residual attack success falls to 0.0 while S3 correctness and S4 retention both reach 1.0. The strongest travel case does not require generic suffix replay: it succeeds in writer-only mode with four revocations and two replayed writer events. The training chain reproduces the same pattern, which reduces the risk that the live result is a single anecdote.
+In the travel chain, the agent reads a malicious reference file in S1 that says future reimbursement questions should consult \texttt{restricted/vault.txt}. The memory writer stores that rule as a durable workflow note together with a benign user fact about the reimbursement tier. In S2 the poisoned state leads to restricted-file reads. After S2 the malicious file read is marked suspicious. In S3 the unrecovered run still reads the restricted file. Selective replay instead revokes four poisoned descendants, replays two writer events, creates clean replacements, and returns the agent to public travel policy. In S4 the repaired state still remembers the user's contractor tier and answers the hotel-cap question correctly.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{fig5_live_case_study.pdf}
+\caption{Live travel case. Without recovery, S3 follows the restricted route; selective replay restores clean S3 behavior and retained S4 memory.}
+\label{fig:live-case-study}
+\end{figure}
+
+The strongest travel case does not require generic suffix replay: it succeeds in writer-only mode with four revocations and two replayed writer events. The training chain reproduces the same pattern, which reduces the risk that the live result is a single anecdote.
 
 \subsection{Rollback remains a real baseline}
 
-The paper would be weak if selective replay simply renamed rollback. It does not. Figure~\ref{fig:cost-retention} shows the artifact-level cost-retention frontier: rollback and selective replay both preserve retention, but retrieval-memory selective replay does so at materially lower post-detection cost. Summary-memory selective replay often falls back to rollback in the artifact, which is why we treat summary as a qualified result rather than overclaiming broad live success.
-
-That qualification matters. On rolling summaries, the conservative replay-safe rule often decides that writer-only replay is unsound. The resulting summary-memory point should therefore be read as evidence that the fallback path is necessary and operationally useful, not as a second independent writer-only replay win.
+The paper would be weak if selective replay simply renamed rollback. It does not. Figure~\ref{fig:cost-retention} summarizes the artifact-level cost-retention frontier.
 
 \begin{figure}[t]
 \centering
@@ -155,6 +144,10 @@ That qualification matters. On rolling summaries, the conservative replay-safe r
 \caption{Artifact-level cost versus retained benign state. Selective replay occupies the desirable region only because retrieval-memory runs avoid full suffix replay; summary-memory runs are more rollback-like.}
 \label{fig:cost-retention}
 \end{figure}
+
+Rollback and selective replay both preserve retention, but retrieval-memory selective replay does so at materially lower post-detection cost. Summary-memory selective replay often falls back to rollback in the artifact, which is why we treat summary as a qualified result rather than overclaiming broad live success.
+
+That qualification matters. On rolling summaries, the conservative replay-safe rule often decides that writer-only replay is unsound. The resulting summary-memory point should therefore be read as evidence that the fallback path is necessary and operationally useful, not as a second independent writer-only replay win.
 
 \section{Related Work and Scope}
 

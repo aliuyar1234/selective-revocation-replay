@@ -3,3 +3,8 @@
 *.pdf binary
 *.png binary
 *.pyd binary
+
+vendor/** linguist-vendored
+results/** linguist-generated
+paper/usenix_security26/assets/** linguist-generated
+paper/usenix_security26/artifact_table.tex linguist-generated

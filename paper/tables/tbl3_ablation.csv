@@ -1,5 +1,0 @@
-method,architecture,residual_asr_s3,s4_retention_accuracy
-revoke_no_replay,retrieval,0,0
-revoke_no_replay,summary,0,0
-selective_replay,retrieval,0,0.75
-selective_replay,summary,0,0.75

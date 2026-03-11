@@ -3,8 +3,10 @@
 __pycache__/
 *.pyc
 *.pyo
+*.zip
 
 archive/
+.tmp_reader_release/
 
 results/base_histories/
 results/method_runs/
@@ -16,6 +18,14 @@ results/model_pilots/live_confirmation_qwen*.md
 results/model_pilots/*local_backend_pilots.md
 
 paper/_qa/
+paper/.tmp_pdf_pages/
+paper/.tmp_pdf_pages*/
+paper/_tmp_pdf_pages*/
+paper/figures/
+paper/tables/
+paper/refs.bib
+paper/usenix_security26/main.pdf
+paper/usenix_security26/live_table.tex
 paper/usenix_security26/*.aux
 paper/usenix_security26/*.bbl
 paper/usenix_security26/*.blg
@@ -23,8 +33,12 @@ paper/usenix_security26/*.fdb_latexmk
 paper/usenix_security26/*.fls
 paper/usenix_security26/*.log
 paper/usenix_security26/*.out
+paper/usenix_security26/*.run.xml
 paper/usenix_security26/*.synctex.gz
 paper/usenix_security26/_page*_preview.png
+paper/usenix_security26/assets/*.png
+
+artifact/generated_manifest.json
 
 .DS_Store
 Thumbs.db

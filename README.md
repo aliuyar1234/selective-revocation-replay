@@ -17,11 +17,12 @@ The project studies post-compromise recovery in a narrow but fully reproducible 
 
 - implementation code for the runtime, recovery logic, scoring, and plotting
 - the submission-style LaTeX paper under `paper/usenix_security26/`
+- the public compiled paper PDF at `paper/selective-revocation-and-replay.pdf`
 - frozen aggregate results under `results/raw/`, `results/tables/`, and `results/figures/`
 - the focused live-confirmation summary under `results/model_pilots/live_confirmation_latest.*`
 - an artifact package with a compact runbook under `artifact/`
 
-Internal planning notes, local handoff material, QA screenshots, and bulky upstream vendor extras are intentionally kept out of the public Git surface.
+Internal planning notes, local handoff material, QA screenshots, transient paper-build files, and release bundles are intentionally kept out of the public Git surface. The only large vendored subtree that remains is the optional local-Qwen fallback under `vendor/`.
 
 ## Reproducibility profile
 
@@ -34,7 +35,7 @@ Optional model-backed configurations remain available through `configs/models.ya
 - `qwen2_5_7b_instruct`
 - `qwen3_5_27b_instruct`
 
-For local Qwen checkpoints, set a local model path in the corresponding config or provide `LOCAL_QWEN_MODEL_PATH` in your environment before running the backend.
+For local Qwen checkpoints, set a local model path in the corresponding config or provide `LOCAL_QWEN_MODEL_PATH` in your environment before running the backend. If `transformers` and its runtime dependencies are already installed in your environment, the local-Qwen path uses them directly. The vendored `vendor/` tree is a fallback for that optional path, not a requirement for the deterministic artifact.
 
 ## Main entry points
 
@@ -55,11 +56,22 @@ For local Qwen checkpoints, set a local model path in the corresponding config o
 - `scripts/`: command-line entry points
 - `data/workspace/`: chain workspaces and source files
 - `results/`: frozen aggregate outputs and paper-ready artifacts
-- `paper/`: paper source and copied figure/table assets
+- `paper/`: public compiled PDF and standalone LaTeX source package
 - `artifact/`: compact reproducibility package
 - `appendix/`: supporting appendix material and chain catalog
+- `vendor/`: bundled fallback dependencies for the optional local Qwen backend
 
-Directories that hold bulky local run outputs, transient paper build files, or archived working material are intentionally ignored by Git.
+Directories that hold bulky local run outputs, transient paper build files, local preview renders, handoff packages, or archived working material are intentionally ignored by Git.
+
+## Public reading path
+
+Readers who only want the paper and frozen evidence can start with:
+
+- `paper/selective-revocation-and-replay.pdf`
+- `paper/usenix_security26/main.tex`
+- `results/tables/`
+- `results/figures/`
+- `artifact/runbook.md`
 
 ## Quick start
 
@@ -70,6 +82,7 @@ Directories that hold bulky local run outputs, transient paper build files, or a
 5. Run the full frozen matrix with the deterministic backend.
 6. Generate tables and figures.
 7. Build the paper with `powershell -ExecutionPolicy Bypass -File paper/usenix_security26/build.ps1`.
+   This refreshes the public PDF at `paper/selective-revocation-and-replay.pdf`.
 
 ## Verification
 

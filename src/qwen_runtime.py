@@ -4,6 +4,7 @@ import json
 import os
 import sys
 import threading
+from importlib.util import find_spec
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -31,6 +32,9 @@ def repo_root() -> Path:
 
 def bootstrap_local_qwen_stack() -> None:
     os.environ.setdefault("TRANSFORMERS_SKIP_RUNTIME_VERSION_CHECK", "1")
+    required_modules = ("transformers", "tokenizers", "huggingface_hub", "safetensors")
+    if all(find_spec(name) is not None for name in required_modules):
+        return
     vendor_root = repo_root() / "vendor"
     search_paths = [
         str(vendor_root / "hfdeps"),
