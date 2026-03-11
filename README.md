@@ -6,9 +6,9 @@
 [![Artifact Runbook](https://img.shields.io/badge/Artifact-Runbook-5B4B8A?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/blob/main/artifact/runbook.md)
 [![Pytest](https://img.shields.io/badge/Pytest-25_passed-2ea44f?style=for-the-badge&logo=pytest&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/tests)
 
-This repository contains the code, paper source, and frozen evaluation outputs for **Selective Revocation and Replay for Persistent Indirect Prompt Injection in Memory-Augmented LLM Agents**.
+This repository contains the code, paper source, and frozen evaluation outputs for **Selective Revocation and Replay: Post-Compromise Recovery of Explicit Persisted State in Memory-Augmented LLM Agents**.
 
-> **Abstract.** This project studies post-compromise recovery for memory-augmented LLM agents after persistent indirect prompt injection has already been written into durable state. The core mechanism revokes persisted descendants of suspicious roots and replays only dirty state-writing events when replay is sound, with fallback to coarse rollback otherwise. In a frozen deterministic matrix spanning 8 task chains, 2 memory architectures, 2 attack variants, 5 methods, and 1 ablation, selective replay is the only method that simultaneously reaches zero residual attack success on explicit attacks while preserving non-zero benign retention. A focused live confirmation on `qwen2.5:14b` shows the same recovery wedge on repeated retrieval-memory runs.
+> **Abstract.** This project studies post-compromise recovery for explicit persisted state in memory-augmented LLM agents after persistent indirect prompt injection has already been written into durable state. The core mechanism revokes persisted descendants of suspicious roots and replays only dirty state-writing events when replay is sound, with fallback to coarse rollback otherwise. In a frozen deterministic matrix spanning 8 task chains, 2 memory architectures, 2 attack variants, 5 methods, and 1 ablation, selective replay is the only method that simultaneously achieves zero residual attack success and non-zero benign retention on explicit attacks. On retrieval memory, it matches rollback's retained state while reducing post-detection cost from 17 to 9 extra LLM calls. A focused live confirmation on `qwen2.5:14b` shows the same recovery wedge on repeated explicit retrieval-memory runs.
 
 ## Research focus
 
@@ -26,8 +26,8 @@ The project studies post-compromise recovery in a narrow but fully reproducible 
 ## Main findings
 
 - In the deterministic artifact, selective replay is the only method that combines zero residual explicit attack success with non-zero retained benign state.
-- In retrieval memory, selective replay preserves the rollback-like safety/retention outcome at materially lower post-detection cost.
-- In the focused live confirmation, unrecovered runs keep the attack active while selective replay restores clean follow-up behavior and retained remembered facts.
+- In retrieval memory, selective replay matches rollback's retained state while reducing post-detection cost from 17 to 9 extra LLM calls.
+- In the focused live confirmation, all six unrecovered reruns keep the attack active while all six selective-replay reruns restore clean follow-up behavior and retained remembered facts.
 - The strongest end-to-end live case succeeds with only four revocations and two replayed writer events.
 
 ## What is included

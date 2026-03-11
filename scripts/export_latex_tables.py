@@ -66,7 +66,7 @@ def _build_artifact_table_tex(artifact_rows: list[dict[str, str]]) -> str:
         )
     lines.append("\\bottomrule")
     lines.append("\\end{tabular}")
-    lines.append("\\caption{Deterministic artifact results on explicit attacks. Selective replay is the only method that simultaneously reaches zero residual S3 attack success and preserves non-zero S4 retention, while reducing post-detection cost relative to rollback on retrieval memory.}")
+    lines.append("\\caption{Deterministic artifact results on explicit attacks. Selective replay is the only method that reaches zero residual S3 attack success while preserving non-zero S4 retention in both architectures; on retrieval memory it matches rollback's retained state with 9 rather than 17 post-detection calls.}")
     lines.append("\\label{tab:artifact-main}")
     lines.append("\\end{table*}")
     lines.append("")

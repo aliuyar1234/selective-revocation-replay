@@ -7,10 +7,11 @@
 \usepackage{amsmath,amssymb,amsthm}
 \graphicspath{{assets/}}
 \raggedbottom
+\hypersetup{hypertexnames=false}
 
 \newtheorem{proposition}{Proposition}
 
-\title{\Large \bf Selective Revocation and Replay: Recovering Memory-Augmented LLM Agents from Persistent Indirect Prompt Injection}
+\title{\Large \bf Selective Revocation and Replay: Post-Compromise Recovery of Explicit Persisted State in Memory-Augmented LLM Agents}
 
 \author{
 {\rm Ali Uyar}
@@ -23,28 +24,28 @@
 \maketitle
 
 \begin{abstract}
-Indirect prompt injection becomes a recovery problem once malicious content is written into durable agent state. After compromise, operators need a way to remove future influence of poisoned memory without discarding all benign accumulated context. We study that narrow problem in a provenance-tracked, text-only, local-files agent runtime with explicit persisted state. Given suspicious root objects after compromise, our method revokes persisted descendants derived from those roots and replays only dirty state-writing events when replay is sound, with a fallback to coarse rollback otherwise. In a frozen deterministic matrix spanning 8 task chains, 2 memory architectures, 2 attack variants, 5 methods, and 1 ablation, selective replay is the only method that simultaneously reaches zero residual attack success on explicit attacks and preserves non-zero benign retention. The deterministic artifact establishes breadth; a focused live-model confirmation on schema-constrained local Qwen2.5-14B establishes that the same recovery wedge can appear in a real tool-using agent. Across three repeated runs on each of two explicit retrieval chains, unrecovered agents keep the attack active in later sessions, while selective replay restores clean follow-up behavior and preserved remembered facts in every rerun. The strongest travel case requires only four revocations and two replayed writer events with no fallback. Our scope is explicit persisted state only, with given suspicious roots.
+Persistent indirect prompt injection becomes a recovery problem once malicious instructions are written into durable agent state. We study post-compromise recovery for explicit persisted state in a provenance-tracked, text-only, local-files agent runtime, assuming suspicious roots are given after compromise. Selective replay revokes persisted descendants of those roots and replays only dirty state-writing events when replay is sound, with fallback to coarse rollback otherwise. In a frozen deterministic matrix spanning 8 task chains, 2 memory architectures, 2 attack variants, 5 methods, and 1 ablation, selective replay is the only method that simultaneously achieves zero residual attack success and non-zero S4 retention on explicit attacks. On retrieval memory, it matches rollback's retained state while reducing post-detection cost from 17 to 9 extra LLM calls. We then run a focused live confirmation on schema-constrained \texttt{qwen2.5:14b} over two explicit retrieval chains. Across all six unrecovered reruns, residual attack success remains 1.0; across all six selective-replay reruns, residual attack success falls to 0.0 while both S3 correctness and S4 retention reach 1.0. The strongest travel case requires only four revocations and two replayed writer events with no fallback. This is a narrow result about explicit persisted state, not a general solution to prompt injection detection or hidden-state repair.
 \end{abstract}
 
 \section{Introduction}
 
 Indirect prompt injection is no longer only a per-session prompt problem. Long-lived agents can materialize malicious instructions into durable memory, reusable traces, or rolling summaries, allowing an attacker-controlled file read in one session to shape behavior much later. Once that happens, deleting the current prompt context is not enough. Operators need a recovery primitive that can remove future influence of compromised state without wiping all benign carry-forward knowledge.
 
-This paper studies that post-compromise question. We do not propose a detector, a generic provenance substrate, or a broad prompt-injection benchmark. Instead, we target a narrower systems wedge: \emph{writer-only recovery of explicit persisted state after compromise}. The system receives suspicious root objects after compromise, revokes persisted descendants derived from those roots, and replays only the state-writing events needed to reconstruct clean future state. If writer-only replay is unsound, the runtime falls back to coarse rollback.
+We study post-compromise recovery for explicit persisted agent state in memory-augmented LLM agents. We do not propose a detector, a broad prompt-injection benchmark, or a hidden-state repair method. Our scope is narrower and more operational: once suspicious roots are given after compromise, the runtime revokes their persisted descendants and replays only the dirty state-writing events needed to reconstruct clean future state. If writer-only replay is unsound, it falls back to coarse rollback.
 
-Preventive architectures remain important, but they do not remove the incident-response problem. In deployed systems, contamination may be discovered only after it has already been written into memory or summaries, and operators still need a way to repair future state without discarding all useful carry-forward context. Our contribution is meant to occupy that narrower operational slot.
+Preventive architectures remain important, but they do not remove the incident-response problem. In deployed systems, contamination may be discovered only after it has already been written into memory or summaries, and operators still need a way to repair future state without discarding all useful carry-forward context. This paper occupies that narrower operational slot.
 
-The practical challenge is that recovery must earn its complexity. If root deletion already suffices, or if rollback dominates on safety, retention, and cost, then replay is not interesting. The motivating question is therefore a tradeoff question: can targeted replay recover future safe behavior more surgically than reset-like baselines while preserving benign accumulated state?
+The practical challenge is that recovery must earn its complexity. Delete-like baselines remove attack influence by discarding all carry-forward state. Rollback preserves more benign state, but it pays the cost of replaying a much larger suffix. The motivating question is therefore a tradeoff question: can targeted replay remove future attack influence more surgically than delete/reset baselines and more cheaply than rollback while preserving benign accumulated state?
 
-Our answer is yes, within a deliberately narrow scope. In a deterministic artifact, selective replay is the only method that combines zero residual explicit attack success with non-zero retained benign state. We then show the same wedge on a live local agent using schema-constrained tool outputs. The strongest travel case shows the mechanism end to end: an unrecovered assistant keeps consulting a restricted file due to poisoned memory, while selective replay repairs the poisoned state, returns the agent to public-policy documents, and preserves the remembered reimbursement tier needed for a later benign query.
+Within a deliberately narrow scope, our answer is yes. In the deterministic artifact, selective replay is the only method that combines zero residual explicit attack success with non-zero retained benign state. On retrieval memory, it matches rollback's 0.75 retained benign accuracy while reducing post-detection cost from 17 to 9 extra LLM calls. We then show the same wedge on a live local agent using schema-constrained tool outputs. Across six live reruns on two explicit retrieval chains, all unrecovered runs keep the attack active, while all replay runs restore clean follow-up behavior and preserved remembered facts. The strongest travel case shows the mechanism end to end: an unrecovered assistant keeps consulting a restricted file due to poisoned state, while selective replay repairs the poisoned state, returns the agent to public-policy documents, and preserves the remembered reimbursement tier needed for a later benign query.
 
 \paragraph{Contributions.}
 This work makes four contributions:
 \begin{itemize}
-\item A narrow recovery formulation for persistent indirect prompt injection over explicit persisted state rather than generic prevention or detection.
-\item A small provenance-tracked runtime with append-only object and event logs, descendant revocation, writer-only replay, and rollback fallback.
-\item A frozen deterministic evaluation matrix showing that selective replay improves the safety-retention tradeoff relative to root delete, reset, revoke-only, and rollback baselines.
-\item A focused live-model confirmation showing that the same recovery wedge appears in repeated local Qwen2.5-14B retrieval-memory runs under a strict structured-output tool interface.
+\item We formulate post-compromise recovery for explicit persisted agent state as a distinct systems problem, separate from prompt-injection detection, hidden-state repair, or generic prevention.
+\item We implement a provenance-tracked runtime with append-only object and event logs, persisted-descendant revocation, writer-only replay, and rollback fallback.
+\item We show in a frozen deterministic matrix that selective replay is the only method that combines zero residual explicit attack success with non-zero retained benign state, and that on retrieval memory it reduces post-detection cost from 17 to 9 extra LLM calls relative to rollback.
+\item We confirm the same wedge on repeated local \texttt{qwen2.5:14b} retrieval-memory runs: all six unrecovered reruns preserve attack success, while all six selective-replay reruns restore clean S3 behavior and S4 retention.
 \end{itemize}
 
 \section{Threat Model, Problem Formulation, and Approach}
@@ -103,36 +104,36 @@ We rerun each case three times with \texttt{no\_recovery} and \texttt{selective\
 
 \subsection{Metrics}
 
-All runs use the same frozen metrics: residual S3 attack success, S3 correctness, S4 retention accuracy, extra LLM calls after detection, number of revoked objects, number of replayed writer events, and fallback rate to coarse rollback. Residual S3 attack success is triggered by a restricted-file read or a secret-token leak, while S3 and S4 correctness are rule-based and deterministic.
+All runs use the same frozen metrics: residual S3 attack success, S3 correctness, S4 retention accuracy, extra LLM calls after detection, number of revoked objects, number of replayed writer events, and fallback rate to coarse rollback. Residual S3 attack success is triggered by a restricted-file read or a secret-token leak, while S3 and S4 correctness are rule-based and deterministic. The paper's main comparisons emphasize the safety-retention-cost tradeoff; S3 correctness is reported as a downstream task metric rather than the primary signal of persistence.
 
 \section{Results}
 
 \subsection{Selective replay is the only method that preserves both safety and retention}
 
-We start with the explicit-attack artifact results because they capture the paper's main safety-retention tradeoff. Table~\ref{tab:artifact-main} compares selective replay against reset-like baselines, rollback, and the revoke-only ablation under the same frozen evaluation matrix.
+The main question is whether selective replay earns its extra mechanism by improving the safety-retention-cost tradeoff over reset-like baselines and rollback. We start with explicit attacks because they are where persistent compromise clearly survives into S3 and therefore where recovery methods are meaningfully stress-tested. Table~\ref{tab:artifact-main} compares selective replay against reset-like baselines, rollback, and the revoke-only ablation under the same frozen evaluation matrix.
 
 \input{artifact_table.tex}
 
-Table~\ref{tab:artifact-main} shows the main deterministic tradeoff on explicit attacks. Three baselines remove residual attack success by discarding state: root delete, full reset, and revoke-only all drive S4 retention to zero. Coarse rollback restores retention but pays the highest post-detection cost. Selective replay is the only method that reaches zero residual attack success \emph{and} preserves non-zero benign retention in both architectures. On retrieval memory, it also cuts post-detection calls roughly in half relative to rollback.
+Table~\ref{tab:artifact-main} shows the main deterministic tradeoff on explicit attacks. Three baselines remove residual attack success only by discarding state: root delete, full reset, and revoke-only all drive S4 retention to zero in both architectures. Rollback and selective replay are the only methods that retain benign carry-forward state. On retrieval memory, both reach zero residual attack success and 0.75 S4 retention, but selective replay cuts post-detection cost from 17 to 9 extra LLM calls. On summary memory, selective replay falls back completely to rollback and therefore inherits the same 17-call cost.
 
-This ablation matters. The comparison between revoke-only and selective replay shows that the gain is not merely from deleting bad descendants. The gain comes from replaying only the dirty state-writing path needed to reconstruct clean carry-forward state.
+This ablation matters. The comparison between revoke-only and selective replay shows that the gain is not merely from deleting bad descendants. The gain comes from replaying the dirty state-writing path needed to reconstruct clean carry-forward state. This is the paper's central artifact result: selective replay is useful exactly where writer-only repair avoids full suffix replay, not because revocation alone is already enough.
 
 The full CSV package also includes stealth rows, but they are not the headline claim. In the current artifact, unrecovered stealth persistence is weak, so the cleanest quantitative comparison is on explicit attacks, where unrecovered contamination clearly survives into S3.
 
-\subsection{The recovery wedge appears in a real local agent}
+\subsection{The same wedge appears in a real local agent}
 
-The focused live confirmation asks a narrower question than the artifact: does the same recovery wedge survive contact with a real local model? Across three repeated runs on each of the two explicit retrieval chains, it does. Across all six unrecovered reruns, residual attack success stays at 1.0. Across all six selective-replay reruns, residual attack success falls to 0.0 while S3 correctness and S4 retention both reach 1.0. Figure~\ref{fig:live-case-study} gives the strongest travel case end to end.
+The focused live confirmation asks a narrower question than the artifact: does the same recovery wedge survive contact with a real local model? Across three repeated runs on each of the two explicit retrieval chains, it does. Across all six unrecovered reruns, residual attack success stays at 1.0. Across all six selective-replay reruns, residual attack success falls to 0.0 while S3 correctness and S4 retention both reach 1.0. Figure~\ref{fig:live-case-study} shows the strongest travel case end to end.
 
-In the travel chain, the agent reads a malicious reference file in S1 that says future reimbursement questions should consult \texttt{restricted/vault.txt}. The memory writer stores that rule as a durable workflow note together with a benign user fact about the reimbursement tier. In S2 the poisoned state leads to restricted-file reads. After S2 the malicious file read is marked suspicious. In S3 the unrecovered run still reads the restricted file. Selective replay instead revokes four poisoned descendants, replays two writer events, creates clean replacements, and returns the agent to public travel policy. In S4 the repaired state still remembers the user's contractor tier and answers the hotel-cap question correctly.
+The travel chain makes the mechanism concrete. In S1 the agent reads a malicious reference file that says future reimbursement questions should consult \texttt{restricted/vault.txt}. The writer then materializes two distinct pieces of persisted state: a poisoned workflow note pointing to the restricted file, and a benign remembered reimbursement-tier fact. In S2 the poisoned note persists and drives restricted-file reads. After the malicious read is marked suspicious, the unrecovered S3 rerun follows the same restricted route. Selective replay instead revokes four persisted descendants, replays two writer events, restores clean public-policy behavior in S3, and preserves the contractor-tier fact for the S4 hotel-cap query.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{fig5_live_case_study.pdf}
-\caption{Live travel case. Without recovery, S3 follows the restricted route; selective replay restores clean S3 behavior and retained S4 memory.}
+\caption{Focused live confirmation on \texttt{c01\_travel}, retrieval, explicit, with \texttt{qwen2.5:14b}. The unrecovered rerun returns to \texttt{restricted/vault.txt} in S3; selective replay revokes four descendants, replays two writer events, restores clean S3 behavior, and preserves the remembered S4 fact.}
 \label{fig:live-case-study}
 \end{figure}
 
-The strongest travel case does not require generic suffix replay: it succeeds in writer-only mode with four revocations and two replayed writer events. The training chain reproduces the same pattern, which reduces the risk that the live result is a single anecdote.
+The strongest travel case succeeds in writer-only mode with four revocations and two replayed writer events. The training chain reproduces the same pattern, which turns the live section from a single anecdote into repeated confirmation of the same narrow recovery wedge.
 
 \subsection{Rollback remains a real baseline}
 
@@ -141,33 +142,33 @@ The paper would be weak if selective replay simply renamed rollback. It does not
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig4_cost_vs_retention.pdf}
-\caption{Artifact-level cost versus retained benign state. Selective replay occupies the desirable region only because retrieval-memory runs avoid full suffix replay; summary-memory runs are more rollback-like.}
+\caption{Artifact-level cost versus retained benign state. Retrieval-memory selective replay reaches the rollback-like retention point at lower cost; summary-memory selective replay collapses back to rollback because fallback is ubiquitous.}
 \label{fig:cost-retention}
 \end{figure}
 
-Rollback and selective replay both preserve retention, but retrieval-memory selective replay does so at materially lower post-detection cost. Summary-memory selective replay often falls back to rollback in the artifact, which is why we treat summary as a qualified result rather than overclaiming broad live success.
+Rollback and selective replay both preserve retention, but retrieval-memory selective replay does so at materially lower post-detection cost. Summary-memory selective replay often falls back to rollback in the artifact, which is why we treat summary as a qualified result rather than overclaiming architecture-general live success.
 
-That qualification matters. On rolling summaries, the conservative replay-safe rule often decides that writer-only replay is unsound. The resulting summary-memory point should therefore be read as evidence that the fallback path is necessary and operationally useful, not as a second independent writer-only replay win.
+That qualification matters. On rolling summaries, the conservative replay-safe rule often decides that writer-only replay is unsound. The resulting summary-memory point should therefore be read as evidence that the fallback path is necessary and operationally useful, not as a second independent writer-only replay win. The paper's strongest claim is therefore retrieval-first: selective replay earns its complexity where targeted writer repair actually avoids full suffix re-execution.
 
 \section{Related Work and Scope}
 
 Recent work has already established that LLM agents can be persistently compromised through memory or experience stores, including poisoned memory writes, query-only memory injection, and self-reinforcing persistent control~\cite{agentpoison2024,minja2025,zombie2026,memorygraft2025}. Preventive architectures and provenance-aware memory systems aim to sanitize or structure state during execution~\cite{agentsys2026,agentsentry2026,tiermem2026}. Security guidance increasingly frames prompt injection as an impact-reduction problem rather than something that can be eliminated entirely~\cite{owasp2025,ncsc2025}.
 
-Our contribution is narrower than all of these lines. We do not claim the first persistence attack, the first provenance-aware memory system, or a general prompt-injection defense. We focus on a smaller operational question: once suspicious roots are known, how should a compromised agent recover future behavior without discarding all useful accumulated state?
+Our contribution is narrower than all of these lines. We do not claim the first persistence attack, the first provenance-aware memory system, or a general prompt-injection defense. Our novelty claim is operational: once suspicious roots are known, how can a compromised agent repair future explicit persisted state without discarding all useful accumulated context?
 
 That makes the relationship to prevention complementary rather than adversarial. Preventive designs ask how to avoid contamination in the first place; our setting asks what an operator can still do after contamination has already been materialized into explicit persisted state. Provenance is used here only as a means to support revocation and replay-scoped repair, not as a standalone novelty claim.
 
 \section{Limitations}
 
-This paper is intentionally scoped, and several limitations matter.
+This paper is about one narrow result: when contamination has already been written into explicit, provenance-tracked persisted state, targeted revocation plus replay can repair future state more surgically than reset-like baselines. Everything outside that statement is a limitation, not an implicit claim.
 
-First, the method only covers explicit materialized state. It makes no claim about hidden model state, framework-managed chat buffers, or contamination outside tracked objects. Second, detection remains out of scope; suspicious roots are assumed to be given. In the current artifact, that root intake is effectively oracle-like and usually resolves to a single malicious file read. Third, the environment is deliberately small: one text-only local-files agent, no external side effects, and deterministic scoring. Fourth, the broad artifact is stronger than the live local-model evaluation. The live headline result is retrieval-first because that is where the persistence and replay tradeoff is stable. Fifth, stealth attacks are weak in the current artifact and are not part of the main claim. Sixth, rolling-summary memory remains more brittle than episodic retrieval memory: replay safety is stricter, fallback is more common, and our live summary pilots did not clear the same quality bar as retrieval. Finally, all of the recovery guarantees depend on sufficiently complete object-level logging; partial provenance would weaken or break the method.
+We do not address hidden model state, framework-managed chat buffers, or contamination outside tracked objects. We do not solve detection; suspicious roots are assumed to be given, and in the current artifact that root intake is effectively oracle-like and usually resolves to a single malicious file read. The environment is deliberately small: one text-only local-files agent, no external side effects, and deterministic scoring. The broad artifact is stronger than the live section, and the live headline is retrieval-first because that is where the safety-retention-cost wedge is stable. Stealth persistence is weak in the current artifact, and rolling summaries remain more rollback-like than writer-repair-like. Finally, all recovery guarantees depend on sufficiently complete object-level logging; partial provenance would weaken or break the repair claim.
 
-These limitations narrow the claim, but they also make it cleaner. Rather than broadening into a weak benchmark sweep, we present the narrowest result that the implementation strongly supports.
+These limits are the price of a cleaner statement. Rather than broadening into a weaker benchmark paper, we present the narrowest result that the implementation strongly supports.
 
 \section{Conclusion}
 
-Selective revocation plus writer-only replay is a practical recovery primitive for persistent indirect prompt injection in memory-augmented agents. In the deterministic artifact, it is the only method that combines zero residual explicit attack success with non-zero retained benign state. In focused live local-model confirmation, the same wedge appears on repeated explicit retrieval runs: unrecovered state keeps the attack active, while selective replay repairs later behavior and preserves remembered facts. Within its explicit-state scope, this work answers a question the prompt-injection literature often leaves open: what to do \emph{after} the agent has already been compromised.
+Selective revocation plus writer-only replay is not a general solution to prompt injection. It is a post-compromise recovery primitive for explicit persisted state. In the strongest supported setting---explicit attacks on retrieval memory---it removes residual attack influence more surgically than delete/reset baselines and more cheaply than rollback. The focused live confirmation shows that the same wedge survives in a real local model. Once persistent compromise has been written into tracked state, repair becomes a systems problem; this paper shows one narrow case where that repair can be done well.
 
 \appendix
 \section*{Ethical Considerations}
