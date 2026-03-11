@@ -1,6 +1,7 @@
 # Selective Revocation and Replay
 
 [![Paper PDF](https://img.shields.io/badge/Paper_PDF-Download-0A66C2?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/raw/main/paper/selective-revocation-and-replay.pdf)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18967061-1f70b8?style=for-the-badge)](https://doi.org/10.5281/zenodo.18967061)
 [![Citation](https://img.shields.io/badge/Citation-CFF-E05D44?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/blob/main/CITATION.cff)
 [![LaTeX Source](https://img.shields.io/badge/LaTeX-Source-008080?style=for-the-badge&logo=latex&logoColor=white)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/paper/usenix_security26)
 [![Frozen Results](https://img.shields.io/badge/Results-Frozen_Artifact-2E8B57?style=for-the-badge)](https://github.com/aliuyar1234/selective-revocation-replay/tree/main/results)
