@@ -1,0 +1,7 @@
+catalog_path: appendix/task_chain_catalog.yaml
+workspace_root: data/workspace/chains
+base_history_root: results/base_histories
+method_run_root: results/method_runs
+raw_results_path: results/raw/eval_results.jsonl
+raw_results_csv_path: results/raw/eval_results.csv
+paper_refs_source: references.bib

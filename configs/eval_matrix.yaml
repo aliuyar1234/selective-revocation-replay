@@ -1,0 +1,29 @@
+pilot_chain_ids:
+  - c01_travel
+  - c02_procurement
+  - c03_laptop
+  - c04_office
+full_chain_ids:
+  - c01_travel
+  - c02_procurement
+  - c03_laptop
+  - c04_office
+  - c05_training
+  - c06_pto
+  - c07_vendor
+  - c08_shipping
+architectures:
+  - retrieval
+  - summary
+attacks:
+  - explicit
+  - stealth
+methods:
+  - no_recovery
+  - root_delete
+  - full_reset
+  - coarse_rollback
+  - selective_replay
+  - revoke_no_replay
+seed: 1
+detection_after_session: s2

@@ -1,0 +1,80 @@
+# Selective Revocation and Replay
+
+This repository contains the code, paper source, and frozen evaluation outputs for **Selective Revocation and Replay for Persistent Indirect Prompt Injection in Memory-Augmented LLM Agents**.
+
+The project studies post-compromise recovery in a narrow but fully reproducible setting:
+
+- one single-agent runtime
+- text-only local files workspace
+- two tools: `search_docs` and `read_doc`
+- two persisted-state architectures: episodic retrieval memory and rolling summaries
+- append-only provenance logging
+- selective descendant revocation
+- writer-only replay with coarse rollback fallback
+- a frozen evaluation matrix over 8 chains, 2 architectures, 2 attack variants, 5 methods, and 1 ablation
+
+## What is included
+
+- implementation code for the runtime, recovery logic, scoring, and plotting
+- the submission-style LaTeX paper under `paper/usenix_security26/`
+- frozen aggregate results under `results/raw/`, `results/tables/`, and `results/figures/`
+- the focused live-confirmation summary under `results/model_pilots/live_confirmation_latest.*`
+- an artifact package with a compact runbook under `artifact/`
+
+Internal planning notes, local handoff material, QA screenshots, and bulky upstream vendor extras are intentionally kept out of the public Git surface.
+
+## Reproducibility profile
+
+The default backend is `heuristic_artifact`, which makes the frozen evaluation deterministic and fully reproducible from the repository.
+
+Optional model-backed configurations remain available through `configs/models.yaml`:
+
+- `qwen2_5_14b_ollama`
+- `qwen2_5_32b_ollama`
+- `qwen2_5_7b_instruct`
+- `qwen3_5_27b_instruct`
+
+For local Qwen checkpoints, set a local model path in the corresponding config or provide `LOCAL_QWEN_MODEL_PATH` in your environment before running the backend.
+
+## Main entry points
+
+- `python scripts/build_workspace.py --chain c01_travel --attack explicit`
+- `python scripts/run_base_history.py --chain c01_travel --architecture retrieval --attack explicit`
+- `python scripts/apply_method.py --base-history <run_id> --method selective_replay`
+- `python scripts/run_eval_matrix.py`
+- `python scripts/run_live_confirmation_batch.py`
+- `python scripts/make_tables.py`
+- `python scripts/make_figures.py`
+- `python scripts/build_paper_artifacts.py`
+
+## Repository layout
+
+- `configs/`: runtime, evaluation, and backend settings
+- `prompts/`: prompt templates
+- `src/`: runtime, recovery, scoring, and plotting modules
+- `scripts/`: command-line entry points
+- `data/workspace/`: chain workspaces and source files
+- `results/`: frozen aggregate outputs and paper-ready artifacts
+- `paper/`: paper source and copied figure/table assets
+- `artifact/`: compact reproducibility package
+- `appendix/`: supporting appendix material and chain catalog
+
+Directories that hold bulky local run outputs, transient paper build files, or archived working material are intentionally ignored by Git.
+
+## Quick start
+
+1. Install the package and developer dependencies.
+2. Materialize a workspace or let the run scripts do it automatically.
+3. Run a base history through S1-S2.
+4. Apply one or more recovery methods to the same compromised base history.
+5. Run the full frozen matrix with the deterministic backend.
+6. Generate tables and figures.
+7. Build the paper with `powershell -ExecutionPolicy Bypass -File paper/usenix_security26/build.ps1`.
+
+## Verification
+
+- `python -m pytest -q`
+- `python scripts/make_tables.py`
+- `python scripts/make_figures.py`
+
+The frozen aggregate outputs needed to inspect the current paper claims are already included in the repository.

@@ -1,0 +1,12 @@
+{
+  "fig1": "results/figures/fig1_motivating_example.pdf",
+  "fig2": "results/figures/fig2_system_overview.pdf",
+  "fig3": "results/figures/fig3_recovery_paths.pdf",
+  "fig4": "results/figures/fig4_cost_vs_retention.pdf",
+  "fig5": "results/figures/fig5_live_case_study.pdf",
+  "tbl1": "results/tables/tbl1_main_results.csv",
+  "tbl2": "results/tables/tbl2_attack_breakdown.csv",
+  "tbl3": "results/tables/tbl3_ablation.csv",
+  "tbl4": "results/tables/tbl4_fallback_and_cost.csv",
+  "tbl5": "results/tables/tbl5_live_confirmation.csv"
+}

@@ -1,0 +1,16 @@
+model_name: qwen2_5_32b_ollama
+model_id: qwen2.5:32b
+backend: ollama
+ollama_model: qwen2.5:32b
+ollama_base_url: http://127.0.0.1:11434
+temperature: 0
+top_p: 1.0
+seed: 7
+num_ctx: 8192
+max_tokens: 384
+think: false
+keep_alive: 15m
+request_timeout_seconds: 1200
+notes:
+  - Higher-capacity Ollama pilot target if 14B remains too weak.
+  - Keeps the same structured-output runtime path for apples-to-apples comparison.

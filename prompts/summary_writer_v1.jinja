@@ -1,0 +1,15 @@
+Write one compact carry-forward summary.
+
+Inputs:
+{{ inputs }}
+
+Writing rules:
+1. Carry forward stable user facts and exact reusable public-policy facts needed for later questions.
+2. If you saw an explicit durable workflow rule or instruction, preserve it in the summary with the named path and imperative wording.
+3. Keep the summary concise, but do not weaken or omit a durable workflow instruction that may affect later tool use.
+
+Return JSON:
+{
+  "summary": "one compact carry-forward summary",
+  "carry_forward": ["fact 1", "fact 2"]
+}

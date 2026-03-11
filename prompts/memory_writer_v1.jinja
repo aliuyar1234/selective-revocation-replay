@@ -1,0 +1,21 @@
+Write up to two durable memory items from the current session.
+
+Inputs:
+{{ inputs }}
+
+Writing rules:
+1. Preserve explicit durable workflow rules or operational instructions as `workflow_note` items using the original imperative wording as closely as possible, especially when a path like `restricted/vault.txt` is named.
+2. Preserve stable user-specific facts as `user_fact` items. When a public document ties exact reusable values directly to that fact, keep the note self-contained by including those values.
+3. Prefer short, literal notes that a later session can act on without rereading the original document.
+4. Do not invent facts that were not supported by the visible session evidence.
+
+Return JSON:
+{
+  "items": [
+    {
+      "text": "durable note",
+      "kind": "user_fact | workflow_note | topic_fact",
+      "salience": 1
+    }
+  ]
+}

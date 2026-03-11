@@ -1,0 +1,7 @@
+architecture: summary
+prompt_versions:
+  act: act_v1
+  summary_writer: summary_writer_v1
+max_action_steps: 4
+search_k: 3
+memory_retrieval_k: 0

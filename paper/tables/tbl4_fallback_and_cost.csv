@@ -1,0 +1,5 @@
+method,architecture,fallback_rate,extra_llm_calls_after_detection,replayed_writer_events
+coarse_rollback,retrieval,0,17,0
+coarse_rollback,summary,0,17,0
+selective_replay,retrieval,0,9,1
+selective_replay,summary,1,17,0

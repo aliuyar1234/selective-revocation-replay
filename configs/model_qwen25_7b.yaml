@@ -1,0 +1,13 @@
+model_name: qwen2_5_7b_instruct
+model_id: Qwen2.5-7B-Instruct
+local_model_path: /path/to/Qwen2.5-7B-Instruct
+backend: local_qwen
+runtime_loader: auto_causal_lm
+temperature: 0
+top_p: 1.0
+max_tokens: 256
+json_mode: true
+chat_template_kwargs: {}
+notes:
+  - Replace local_model_path with a local checkpoint path, or override it via LOCAL_QWEN_MODEL_PATH.
+  - This is the lighter local text-only option for strict JSON tool routing.

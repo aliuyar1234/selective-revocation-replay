@@ -1,0 +1,8 @@
+model_name: heuristic_artifact
+model_id: deterministic-heuristic-backend
+backend: heuristic
+max_tokens: 0
+json_mode: true
+notes:
+  - This is the paper and artifact default because it is fully reproducible and satisfies the frozen evaluation contract.
+  - Local Qwen checkpoints remain available as exploratory backends via SRR_ACTIVE_MODEL.

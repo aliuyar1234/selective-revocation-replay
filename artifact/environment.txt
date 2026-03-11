@@ -1,0 +1,22 @@
+Artifact environment notes
+Date: 2026-03-10
+
+Observed local runtime
+- OS path style: Windows
+- Python: 3.12.10
+
+Project dependencies
+- PyYAML
+- Jinja2
+- matplotlib
+- pytest (optional, for local verification)
+
+Repository assumptions
+- no network access required for the deterministic heuristic pipeline
+- no external database required
+- no browser, email, or multimodal dependencies
+- no git metadata required for basic execution
+
+Runtime note
+- The released artifact defaults to the deterministic heuristic backend.
+- The runtime boundary was designed so a local quantized Qwen-style backend can replace that layer later.

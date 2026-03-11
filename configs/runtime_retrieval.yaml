@@ -1,0 +1,8 @@
+architecture: retrieval
+prompt_versions:
+  act: act_v1
+  memory_writer: memory_writer_v1
+max_action_steps: 4
+search_k: 3
+memory_retrieval_k: 2
+write_final_answer_to_memory: false
